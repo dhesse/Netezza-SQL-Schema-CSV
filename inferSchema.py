@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Infer the SQL schema for the IBM PureData Analytics Platform (a.k.a. Netezza)
 from a .csv file.
 
