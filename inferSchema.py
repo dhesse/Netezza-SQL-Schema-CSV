@@ -26,6 +26,7 @@ NOTE: Some of the officially supported types are not used here!
 """
 
 import io
+import re
 import argparse
 from parsers import getNetezzaParser
 
@@ -35,10 +36,19 @@ def mkScheme(column_names, parsers):
                       for column_name, parser in
                       zip(column_names, parsers))
 
+def quoteColumnNames(column_names):
+    """Add quotes around non-standard column names that Netezza allows."""
+    for name in column_names:
+        if re.search('[^A-Z_]', name):
+            yield u'"{0}"'.format(name)
+        else:
+            yield name
+
 def parseFile(fileName, outputFileName, encoding, separator):
     with io.open(fileName, encoding=encoding) as input_file:
-        column_names = input_file.readline()[:-1].split(separator)
-        parsers = [getNetezzaParser() for i in range(len(column_names))]
+        column_names = quoteColumnNames(
+            input_file.readline()[:-1].split(separator))
+        parsers = [getNetezzaParser() for i in column_names]
         for i, line in enumerate(input_file):
             if i % 5000 == 0:
                 print "Processed {0} lines.".format(i)
