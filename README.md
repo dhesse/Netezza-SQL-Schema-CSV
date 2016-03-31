@@ -8,24 +8,30 @@ them to Netezza's built-in types:
 
 ## Supported Types
 
-CHAR(N)
-VARCHAR(N)
-NCHAR(N)
-NVARCHAR(N)
+### Character
 
-BYTEINT   8-bit signed integer
-SMALLINT 16 bit signed integer
-INTEGER  32 bit signed integer
-BIGINT   64 bit signed integer
+* CHAR(N)
+* VARCHAR(N)
+* NCHAR(N)
+* NVARCHAR(N)
 
-REAL
-DOUBLE PRECISION
+### Numeric Types
 
-DATE
-TIME
-DATETYPE
+* BYTEINT   8-bit signed integer
+* SMALLINT 16 bit signed integer
+* INTEGER  32 bit signed integer
+* BIGINT   64 bit signed integer
+ 
+* REAL
+* DOUBLE PRECISION
 
-NOTE: Some of the officially supported types are not used here!
+### Date and Time
+
+* DATE
+* TIME
+* DATETYPE
+
+**NOTE**: Some of the officially supported types are not used here!
 
 ## Usage
 
