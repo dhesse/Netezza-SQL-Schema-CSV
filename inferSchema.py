@@ -1,4 +1,5 @@
 import io
+import re
 
 class IntParser(object):
     def __init__(self, precision_bits, name, priority=2):
@@ -10,13 +11,14 @@ class IntParser(object):
     def __call__(self, input_string):
         if not self.valid:
             return False
-        try:
-            input_int = int(input_string)
-            if input_int > self.upper_bound or \
-               input_int < self.lower_bound:
-                self.valid = False
-        except ValueError:
-            self.vaild = False
+        if not re.match('-?\d*$', input_string):
+            self.valid = False
+            return False
+        if '' == input_string:
+            return False
+        input_int = int(input_string)
+        if not self.lower_bound <= input_int <= self.upper_bound:
+            self.valid = False
         return self.valid
     def __str__(self):
         return self.name
@@ -38,7 +40,7 @@ class FloatParser(object):
             self.vaild = False
         return self.valid
     def __str__(self):
-        if digits <= 6:
+        if self.digits <= 6:
             return "REAL"
         return "DOUBLE PRECISION"
 
@@ -101,7 +103,7 @@ def parseFile(fileName, encoding, separator):
                 print i
             parser_lists = [refreshParsers(parsers, input_string)
                             for parsers, input_string in
-                            zip(parser_lists, line.split(separator))]
+                            zip(parser_lists, line[:-1].split(separator))]
     with io.open("scheme.txt", "w", encoding="utf8") as out_file:
         out_file.write(mkScheme(column_names, parser_lists))
 
