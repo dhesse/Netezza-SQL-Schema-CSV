@@ -28,7 +28,7 @@ NOTE: Some of the officially supported types are not used here!
 import io
 import re
 import argparse
-from parsers import getNetezzaParser
+import parsers
 
 def mkScheme(column_names, parsers):
     return u",\n".join(u"{0} {1}".format(column_name,
@@ -46,17 +46,17 @@ def quoteColumnNames(column_names):
 
 def parseFile(fileName, outputFileName, encoding, separator):
     with io.open(fileName, encoding=encoding) as input_file:
-        column_names = quoteColumnNames(
-            input_file.readline()[:-1].split(separator))
-        parsers = [getNetezzaParser() for i in column_names]
+        column_names = list(quoteColumnNames(
+            input_file.readline()[:-1].split(separator)))
+        column_parsers = [parsers.getNetezzaParser() for i in column_names]
         for i, line in enumerate(input_file):
             if i % 5000 == 0:
                 print "Processed {0} lines.".format(i)
-            parsers = [parser(input_string)
+            column_parsers = [parser(input_string)
                             for parser, input_string in
-                            zip(parsers, line[:-1].split(separator))]
+                            zip(column_parsers, line[:-1].split(separator))]
     with io.open(outputFileName, "w", encoding="utf8") as out_file:
-        out_file.write(mkScheme(column_names, parsers))
+        out_file.write(mkScheme(column_names, column_parsers))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
@@ -69,6 +69,22 @@ if __name__ == "__main__":
     parser.add_argument('--separator', '-s', default=',',
                         help=("separator that is used in the .csv file"
                               " (default: ',')"))
+    parser.add_argument('--dateformat', '-d',
+                        help=("date parsing format, as python regular"
+                              " expression (default: '\d{4}\-\d{2}\-\d{2}')"))
+    parser.add_argument('--timeformat', '-t',
+                        help=("date parsing format, as python regular"
+                              " expression (default: '\d{2}:\d{2}:d{2}')"))
+    parser.add_argument('--datetimeformat', '-dt',
+                        help=("date parsing format, as python regular"
+                              " expression (default: "
+                              "'\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:d{2}')"))
     args = parser.parse_args()
+    parsers.DateParser.format_string = \
+        args.dateformat or parsers.DateParser.format_string
+    parsers.TimeParser.format_string = \
+        args.timeformat or parsers.TimeParser.format_string
+    parsers.DateTimeParser.format_string = \
+        args.dateformat or parsers.DateTimeParser.format_string
     parseFile(args.csv_file, args.output_file, args.input_encoding,
               args.separator)

@@ -49,3 +49,12 @@ them to Netezza's built-in types:
                             input file encoding (default: utf8)
       --separator SEPARATOR, -s SEPARATOR
                             separator that is used in the .csv file (default: ',')
+      --dateformat DATEFORMAT, -d DATEFORMAT
+                            date parsing format, as python regular expression
+                            (default: '\d{4}\-\d{2}\-\d{2}')
+      --timeformat TIMEFORMAT, -t TIMEFORMAT
+                            date parsing format, as python regular expression
+                            (default: '\d{2}:\d{2}:d{2}')
+      --datetimeformat DATETIMEFORMAT, -dt DATETIMEFORMAT
+                            date parsing format, as python regular expression
+                            (default: '\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:d{2}')

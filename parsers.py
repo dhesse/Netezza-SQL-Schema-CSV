@@ -63,6 +63,8 @@ class FloatParser(object):
         self.valid = True
         self.digits = 0
     def __call__(self, input_string):
+        if not input_string:
+            return self
         if not re.match('-?\d+\.\d+$', input_string):
             return getNextParser(self)
         digits = len(input_string) - 1
